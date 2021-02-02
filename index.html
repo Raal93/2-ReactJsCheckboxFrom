@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>JSX - składnia React do tworzenie struktury</title>
+	<!-- Plik ze stylami css -->
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<!-- Element HTML pełniący rolę kontenera dla aplikacji React -->
+	<div id="root"></div>
+	<!-- Biblioteka React -->
+	<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+	<!-- Biblioteka React DOM -->
+	<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+	<!-- Babel - Nie korzystamy na produkcji (tylko podczas developmentu) -->
+	<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+	<!-- Nasz kod - kompilowanie JSX i ES6 do ES5 - zwróc uwagę na atrybut type (domyślnie: type='text/javascript -->
+	<script type="text/babel">
+		class TicketShop extends React.Component {
+        state = {
+          isConfirmed: false,
+          isFormSubmitted: false
+        }
+
+        handleCheckboxChange = () => {
+          this.setState({
+            isConfirmed: !this.state.isConfirmed,
+            isFormSubmitted: false
+          })
+        }
+
+        handleFormSubmit = (e) => {
+          e.preventDefault()
+          if (!this.state.isFormSubmitted) {
+            this.setState({
+              isFormSubmitted: true
+            })
+          }
+        }
+
+        render() {
+          const { isConfirmed } = this.state
+          return (
+            <>
+              <h1>Buy a ticket for the best horror movie of this year!</h1>
+              <Form
+                onSubmit={this.handleFormSubmit}
+                checked={isConfirmed}
+                onChange={this.handleCheckboxChange}
+              />
+              {showMessage(this.state.isFormSubmitted, this.state.isConfirmed)}
+            </>
+          )
+        }
+      }
+
+      const Form = (props) => {
+        return (
+          <form onSubmit={props.onSubmit}>
+            <input type="checkbox" id="age" checked={props.checked} onChange={props.onChange} />
+            <label htmlFor="age">I am at least 16 years old</label>
+            <br /> <br />
+            <button type="submit">Buy a ticket</button>
+          </form>
+        )
+      }
+
+      const showMessage = (isFormSubmitted, isConfirmed) => {
+        if (isFormSubmitted) {
+          return isConfirmed ? <PositiveMsg /> : <NegativeMsg />
+        } else {
+          return null
+        }
+      }
+
+      const PositiveMsg = () => <p>Have a nice time watching!</p>
+      const NegativeMsg = () => <p>You must be 16 years or older to watch this movie.</p>
+
+      ReactDOM.render(<TicketShop />, document.getElementById('root'))
+	</script>
+</body>
+
+</html>
